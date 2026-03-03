@@ -114,6 +114,7 @@ class Game:
         self.bullet = None
         self.alien_projectiles.clear()
         self.ufo.active = False
+        self.sound.reset_march()
 
     # ------------------------------------------------------------------
     # Update sub-systems
@@ -161,6 +162,7 @@ class Game:
         if self.alien_move_timer < alien_step_interval(len(alive)):
             return
         self.alien_move_timer = 0.0
+        self.sound.play_march()
 
         self.alien_direction, _ = move_formation(
             alive,
@@ -204,13 +206,17 @@ class Game:
 
     def _update_ufo(self, dt: float) -> None:
         if self.ufo.active:
+            was_active = True
             self.ufo.update(dt)
+            if not self.ufo.active:  # just left the screen naturally
+                self.sound.stop("ufo")
         else:
+            was_active = False
             self.ufo_spawn_timer -= dt
             if self.ufo_spawn_timer <= 0.0:
                 self.ufo.spawn(from_left=random.choice([True, False]))
                 self.ufo_spawn_timer = random.uniform(12.0, 20.0)
-                self.sound.play("ufo")
+                self.sound.play("ufo", loop=True)
 
         if self.ufo_popup is not None:
             x, y, ttl, pts = self.ufo_popup
@@ -236,6 +242,7 @@ class Game:
                 elif handle_ufo_hit(shot_as_projectile, self.ufo):
                     pts = self.score.add_ufo()
                     self.ufo_popup = (self.ufo.rect.centerx, float(self.ufo.rect.y), 1.0, pts)
+                    self.sound.stop("ufo")
                     self.sound.play("ufo_hit")
                     self.bullet = None
 
@@ -363,6 +370,7 @@ class Game:
         self.alien_projectiles.clear()
         self.aliens = self._make_formation()
         self.shields = self._make_shields()
+        self.sound.reset_march()
 
 
 # ---------------------------------------------------------------------------
