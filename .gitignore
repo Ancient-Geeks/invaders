@@ -1,3 +1,6 @@
+# Saved high score
+hiscore.json
+
 # Python
 __pycache__/
 *.py[cod]
