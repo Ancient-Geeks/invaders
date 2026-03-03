@@ -22,8 +22,12 @@ def handle_shield_collisions(
     pts = _sample_points(projectile.rect)
     for shield in shields:
         if shield.intersects_points(pts):
-            impact = pts[-1] if projectile.from_player else pts[0]
-            shield.damage(impact, radius=5)
+            # Use the leading edge of the projectile as the damage centre so
+            # the crater appears where the bullet actually enters the shield:
+            #   player bullet travels upward   → leading edge is the top    (pts[0])
+            #   alien projectile travels downward → leading edge is the bottom (pts[-1])
+            impact = pts[0] if projectile.from_player else pts[-1]
+            shield.damage(impact, radius=6)
             return True
     return False
 

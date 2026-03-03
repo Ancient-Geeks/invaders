@@ -49,13 +49,13 @@ class Shield:
     # Erosion
     # ------------------------------------------------------------------
 
-    def damage(self, world_point: tuple[int, int], radius: int = 5) -> None:
+    def damage(self, world_point: tuple[int, int], radius: int = 6) -> None:
         lx = world_point[0] - self.rect.x
         ly = world_point[1] - self.rect.y
-        for _ in range(6):
-            ox = random.randint(-2, 2)
-            oy = random.randint(-2, 2)
-            r = max(2, radius + random.randint(-1, 2))
+        for _ in range(8):
+            ox = random.randint(-3, 3)
+            oy = random.randint(-3, 3)
+            r = max(2, radius + random.randint(-1, 3))
             pygame.draw.circle(self.surface, (0, 0, 0, 0), (lx + ox, ly + oy), r)
 
     def alpha_at(self, world_point: tuple[int, int]) -> int:
